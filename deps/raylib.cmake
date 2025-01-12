@@ -23,18 +23,7 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
         rlimgui
         GIT_REPOSITORY "https://github.com/raylib-extras/rlImGui.git"
         GIT_TAG "main"
-        GIT_PROGRESS TRUE
+        GIT_PROGRESS FALSE
     )
 
-    FetchContent_MakeAvailable(rlimgui)
-    add_library(rlimgui STATIC
-        ${rlimgui_SOURCE_DIR}/rlImGui.h
-        ${rlimgui_SOURCE_DIR}/rlImGui.cpp
-        ${rlimgui_SOURCE_DIR}/rlImGuiColors.h
-    )
-
-    target_include_directories(rlimgui 
-        PUBLIC ${rlimgui_SOURCE_DIR}
-        )
-    target_link_libraries(rlimgui PUBLIC  raylib imgui)
 endif()
