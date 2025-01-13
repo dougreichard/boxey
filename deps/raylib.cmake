@@ -6,6 +6,7 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     set(FETCHCONTENT_QUIET FALSE)
     set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
     set(BUILD_GAMES    OFF CACHE BOOL "" FORCE) # don't build the supplied example games
+    #set(SUPPORT_MODULE_RAUDIO ON CACHE BOOL "" FORCE)
 
     FetchContent_Declare(
         raylib
