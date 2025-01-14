@@ -21,6 +21,9 @@
 
 #include <string>
 #include <format>
+#include <iostream>
+
+#include <CLI/CLI.hpp>
 
 
 // char yml_buf[] = "{foo: 1, bar: [2, 3], john: doe}";
@@ -76,6 +79,81 @@ void make_art28(CubeMap& cb, std::string& base_dir) {
 
 }
 
+void make_blender(CubeMap& cb, std::string& base_dir, std::string& base_name, bool no_rotate=false) {
+    std::string left_file = base_dir+base_name+"0001.png";
+    std::string right_file = base_dir+base_name+"0003.png";
+    std::string up_file = base_dir+base_name+"0002.png";
+    std::string down_file = base_dir+base_name+"0004.png";
+    std::string front_file = base_dir+base_name+"0005.png";
+    std::string back_file = base_dir+base_name+"0006.png";
+
+
+    Image left = LoadImage(left_file.c_str());
+    Image right = LoadImage(right_file.c_str());
+    Image front = LoadImage(front_file.c_str());
+    Image back = LoadImage(back_file.c_str());
+    Image up = LoadImage(up_file.c_str());
+    Image down = LoadImage(down_file.c_str());
+
+    if (!no_rotate) {
+        // NOTE: Rotate by angle had issue creating lines
+        ImageRotateCCW(&left);
+        //ImageRotateCW(&front);
+        ImageRotateCCW(&up);
+        //ImageRotateCCW(&down);
+        ImageRotateCCW(&back);
+        ImageRotateCCW(&back);
+        ImageRotateCW(&right);
+        //ImageRotateCCW(&right);
+        ImageRotateCCW(&down);
+        //ImageRotateCCW(&down);
+    }
+    
+    
+
+    cb.left = LoadTextureFromImage(left);
+    cb.right = LoadTextureFromImage(right);
+    cb.front = LoadTextureFromImage(front);
+    cb.back = LoadTextureFromImage(back);
+    cb.up = LoadTextureFromImage(up);
+    cb.down = LoadTextureFromImage(down);
+}
+
+void make_space_scape(CubeMap& cb, std::string& base_dir, std::string& base_name) {
+    std::string left_file = base_dir+base_name+"_left.png";
+    std::string right_file = base_dir+base_name+"_right.png";
+    std::string front_file = base_dir+base_name+"_front.png";
+    std::string back_file = base_dir+base_name+"_back.png";
+    std::string up_file = base_dir+base_name+"_up.png";
+    std::string down_file = base_dir+base_name+"_down.png";
+
+    Image left = LoadImage(left_file.c_str());
+    Image right = LoadImage(right_file.c_str());
+    Image front = LoadImage(front_file.c_str());
+    Image back = LoadImage(back_file.c_str());
+    Image up = LoadImage(up_file.c_str());
+    Image down = LoadImage(down_file.c_str());
+
+
+    // NOTE: Rotate by angle had issue creating lines
+    ImageRotateCW(&left);
+    ImageRotateCW(&up);
+    ImageRotateCW(&up);
+    ImageRotateCW(&front);
+    ImageRotateCW(&front);
+    ImageRotateCCW(&right);
+    //ImageRotateCW(&down);
+    //ImageRotateCW(&down);
+
+    cb.left = LoadTextureFromImage(left);
+    cb.right = LoadTextureFromImage(right);
+    cb.front = LoadTextureFromImage(front);
+    cb.back = LoadTextureFromImage(back);
+    cb.up = LoadTextureFromImage(up);
+    cb.down = LoadTextureFromImage(down);
+}
+
+
 void unload_cubemap(CubeMap& cb) {
     UnloadTexture(cb.left);
     UnloadTexture(cb.right);
@@ -88,24 +166,68 @@ void unload_cubemap(CubeMap& cb) {
 
 int main(int argc, char* argv[])
 {
-    // Initialization
-    //--------------------------------------------------------------------------------------
+
+    CLI::App app{"Boxey - A skybox creation tool for cubemaps compatible with Artemis Cosmos."};
+
+    bool my_flag{false};
+    app.add_flag("-s,--show", my_flag, "Show window");
+
+    int sky_type{0};
+    app.add_option("-t,--type", sky_type, "Process as 0 (default) = Created with Blender, 1 = Artemis 2.8 files, 2 = Space scape");
+
+    std::string base_dir = ".";
+    app.add_option("-d,--directory", base_dir, "Directory for source file. Default: current directory.");
+
+    std::string base_name = ".";
+    app.add_option("-f,--file", base_name, "The file base name for the images. Default: blank for blender, \"skybox\" for artemis and spacescape.");
+
+    std::string outfile = "skybox.png";
+    app.add_option("-o,--output", outfile , "Output file name.");
+
+    CLI11_PARSE(app, argc, argv);
+
+    if (base_name==".") {
+        if (sky_type==0) base_name = "";
+        else if (sky_type!=0) base_name = "skybox";
+    }
+
+    
+
+    if (!my_flag) {
+        std::cout << "Processing images\n";
+        if (sky_type == 0) {
+            std::cout << "Using blender rendered format (0001.png)\n";    
+        } else if (sky_type == 1) {
+            std::cout << "Using artemis format (skybox_??.png) with ?? = BK,DN,FR,LF,RT,UP\n";
+        } else if (sky_type == 2) {
+            std::cout << "Using spacescape format (skybox_??.png) with ?? = back,down,front,left,right,up\n";
+        }
+        std::cout << "Base dir: " << base_dir << "\n";
+        std::cout << "Base filename: " << base_name << "\n";
+        std::cout << "Output: " << outfile << "\n";
+        std::cout << "Processing images\n";
+    }
+
+    SetTraceLogLevel(LOG_ERROR); 
+
     int screenWidth = 1280;
     int screenHeight = 800;
 
-
-    SetConfigFlags(FLAG_WINDOW_RESIZABLE|FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT);
+    SetConfigFlags(FLAG_WINDOW_RESIZABLE|FLAG_MSAA_4X_HINT | FLAG_VSYNC_HINT|FLAG_WINDOW_HIGHDPI|FLAG_WINDOW_HIDDEN);
     InitWindow(screenWidth, screenHeight, "Boxey");
 
-    SetTargetFPS(30);
-
-
-
-    
     CubeMap cb;
-    std::string dir = std::format("sb{}/", 10);
-    std::string base_dir = std::format("f:/a/a28/art/{}/", dir);
-    make_art28(cb, base_dir);
+    //std::string dir = std::format("sb{:02d}", 10);
+    //std::string base_dir = std::format("f:/a/a28/art/{}/", dir);
+    if (sky_type==0) {
+        make_blender(cb, base_dir, base_name, true);
+    } else if (sky_type==1) {
+        make_art28(cb, base_dir);
+    } else if (sky_type==2) {
+        make_space_scape(cb, base_dir, base_name);
+    } else if (sky_type==1) {
+        make_blender(cb, base_dir, base_name, false);
+    }
 
     int width = cb.left.width;
     int height = cb.left.height;
@@ -130,12 +252,23 @@ int main(int argc, char* argv[])
     Image offscreen = LoadImageFromTexture(output.texture);
     ImageFlipVertical(&offscreen);
     Texture2D onscreen = LoadTextureFromImage(offscreen);
-    std::string outfile = std::format("{}.png", dir);
+    //std::string outfile = std::format("{}.png", dir);
     ExportImage(offscreen, outfile.c_str());
     //let mut offscreen = output.texture().load_image().unwrap();
     //offscreen.flip_vertical();
     //offscreen.export_image("cube2.png");
     //let onscreen = rl.load_texture_from_image(&thread, &offscreen).unwrap();
+    if (!my_flag) {
+        return 0;
+    }
+    // Initialization
+    //--------------------------------------------------------------------------------------
+    if (IsWindowHidden()) {
+        ClearWindowState(FLAG_WINDOW_HIDDEN); 
+    }
+
+    SetTargetFPS(30);
+
 
     
     // Main game loop
