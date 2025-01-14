@@ -36,6 +36,10 @@ boxey -t 1 -d ./examples/SB10/ -o ./out/ex_a.png
 
 
 ### Spacescape created skyboxes
+Space scape is a utility for creating skyboxes 
+
+[http://alexcpeterson.com/spacescape/](http://alexcpeterson.com/spacescape/)
+
 Space scape create files named a save name ex. "skybox" skybox_left, skybox_right,  skybox_front, skybox_back, skybox_up, skybox_down
 
 By default skybox is assume, but -f can override that
