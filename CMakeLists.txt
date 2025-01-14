@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std:c++20")
 
 
-include(deps/imgui.cmake)
+#include(deps/imgui.cmake)
 include(deps/raylib.cmake)
-include(deps/raygui.cmake)
-include(deps/ryml.cmake)
+#include(deps/raygui.cmake)
+#include(deps/ryml.cmake)
 include(deps/cli11.cmake)
 
 
@@ -22,7 +22,8 @@ add_executable(boxey src/main.cpp)
 # Include raygui directory
 target_include_directories(boxey SYSTEM PRIVATE "${FETCHCONTENT_BASE_DIR}/raygui-src/src")
 
-target_link_libraries(boxey PUBLIC  raylib ryml::ryml CLI11::CLI11)
+#target_link_libraries(boxey PUBLIC  raylib ryml::ryml CLI11::CLI11)
+target_link_libraries(boxey PUBLIC  raylib CLI11::CLI11)
 
 
 if (MSVC)

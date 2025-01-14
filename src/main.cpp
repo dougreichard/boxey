@@ -13,10 +13,9 @@
 
 #include "raylib.h"
 #include "raymath.h"
-#include <ryml.hpp>
 
-#define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
+// #define RAYGUI_IMPLEMENTATION
+// #include "raygui.h"
 
 
 #include <string>
@@ -44,7 +43,6 @@ struct CubeMap {
 
 
 void make_art28(CubeMap& cb, std::string& base_dir) {
-    
     //std::string base_dir = "f:/a/a28/art/sb01/";
     std::string left_file = base_dir+"skybox_LF.jpg";
     std::string right_file = base_dir+"skybox_RT.jpg";
@@ -75,8 +73,6 @@ void make_art28(CubeMap& cb, std::string& base_dir) {
     cb.back = LoadTextureFromImage(back);
     cb.up = LoadTextureFromImage(up);
     cb.down = LoadTextureFromImage(down);
-
-
 }
 
 void make_blender(CubeMap& cb, std::string& base_dir, std::string& base_name, bool no_rotate=false) {
