@@ -1,5 +1,7 @@
 # A skybox image merging utility
 
+This is a utility for merging 6 cube map images into a single image. It works for Artemis Cosmos skyboxes, but may work for other things.
+
 For help
 
 ```
@@ -31,5 +33,5 @@ Space scape create files named a save name ex. "skybox" skybox_left, skybox_righ
 By default skybox is assume, but -f can override that
 
 ```
-boxey -t 2 -d ./examples/spacescape/ -f box -o ./out/ex_a.png
+boxey -t 2 -d ./examples/spacescape/ -f box -o ./out/ex_s.png
 ```
