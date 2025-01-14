@@ -13,7 +13,15 @@ boxey -h
 ### blender created skybox
 The blender template creates 6 images named 0001 through 0006
 
+- 0001 = left
+- 0002 = up
+- 0003 = right
+- 0004 = down
+- 0005 = front
+- 0006 = back
+
 See the examples starter.blend for example camera positions.
+The camera rig is created to avoid needing to rotate any of the images for this tool. For most optimal performance.
 
 ```
 boxey -t 0 -d ./examples/better/ -o ./out/ex_b2.png
